@@ -5,9 +5,9 @@
 ##, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: adhocracy 520cb03\n"
+"Project-Id-Version: adhocracy 227b080\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-10-01 11:42+0200\n"
+"POT-Creation-Date: 2013-11-04 03:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -416,6 +416,10 @@ msgstr ""
 msgid "Proposal: %(proposal)s"
 msgstr ""
 
+#, python-format
+msgid "You are not allowed to edit badge %i"
+msgstr ""
+
 msgid "relevance"
 msgstr ""
 
@@ -562,6 +566,24 @@ msgstr ""
 msgid "The activation link has been re-sent to your email address."
 msgstr ""
 
+msgid "About me"
+msgstr ""
+
+msgid "Newest events"
+msgstr ""
+
+msgid "Contributions"
+msgstr ""
+
+msgid "Votes"
+msgstr ""
+
+msgid "Delegations"
+msgstr ""
+
+msgid "All Events"
+msgstr ""
+
 msgid "Invalid login"
 msgstr ""
 
@@ -597,9 +619,6 @@ msgstr ""
 
 #, python-format
 msgid "Registration attempt on %s"
-msgstr ""
-
-msgid "tutorial_dashboard_title"
 msgstr ""
 
 msgid "The account has been suspended."
@@ -732,6 +751,9 @@ msgstr ""
 
 #, python-format
 msgid "Could not find badges %s"
+msgstr ""
+
+msgid "Duplicates in input set of user badge labels"
 msgstr ""
 
 #, python-format
@@ -979,10 +1001,10 @@ msgstr ""
 msgid "Sort by number of votes for the proposal"
 msgstr ""
 
-msgid "Sort by the difference between number of votes for and against, and prefer newer proposals"
+msgid "First sort by proposals with important badges, then by the difference between number of votes for and against and also prefer newer proposals"
 msgstr ""
 
-msgid "Prefer proposals where the gap between votes for and against is close"
+msgid "Prefer proposals where the gap between votes for and against is close, also proposals with more absolut votes are rated slightly higher"
 msgstr ""
 
 msgid "Sort by the characters of the proposal title"
@@ -1001,6 +1023,24 @@ msgid "activity"
 msgstr ""
 
 msgid "Badge"
+msgstr ""
+
+msgid "Instance hidden state"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
+
+msgid "visible"
+msgstr ""
+
+msgid "Instance state"
+msgstr ""
+
+msgid "frozen"
+msgstr ""
+
+msgid "open"
 msgstr ""
 
 msgid "Instance"
@@ -1083,6 +1123,15 @@ msgid "abstains on"
 msgstr ""
 
 msgid "is against"
+msgstr ""
+
+msgid "is"
+msgstr ""
+
+msgid "for"
+msgstr ""
+
+msgid "against"
 msgstr ""
 
 #, python-format
@@ -1188,6 +1237,14 @@ msgstr ""
 
 #, python-format
 msgid "edited %(proposal)s"
+msgstr ""
+
+#, python-format
+msgid "Proposal badged: %(proposal)s"
+msgstr ""
+
+#, python-format
+msgid "badged %(proposal)s"
 msgstr ""
 
 #, python-format
@@ -1362,13 +1419,6 @@ msgstr ""
 msgid "Comment Edit: %(topic)s"
 msgstr ""
 
-#, python-format
-msgid ""
-"\r\n"
-"\r\n"
-"More info: %(url)s"
-msgstr ""
-
 msgid "This proposal is currently being voted on and cannot be modified."
 msgstr ""
 
@@ -1424,6 +1474,12 @@ msgstr ""
 msgid "Your current vote is already con"
 msgstr ""
 
+msgid "Topic is frozen. Click to view the list of votes."
+msgstr ""
+
+msgid "Instance is frozen. Click to view the list of votes."
+msgstr ""
+
 msgid "Voting has ended. Click to view the list of votes"
 msgstr ""
 
@@ -1450,6 +1506,13 @@ msgid "Category"
 msgstr ""
 
 msgid "Thumbnail badge"
+msgstr ""
+
+#, python-format
+msgid ""
+"\r\n"
+"\r\n"
+"More info: %(url)s"
 msgstr ""
 
 msgid "(Untitled)"
@@ -1522,6 +1585,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Please enter your feedback in here and help us to improve our website"
+msgstr ""
+
 msgid "Submit"
 msgstr ""
 
@@ -1538,6 +1604,9 @@ msgid "No Category"
 msgstr ""
 
 msgid "Others"
+msgstr ""
+
+msgid "Default proposal sort order"
 msgstr ""
 
 msgid "code of conduct"
@@ -1740,9 +1809,6 @@ msgstr ""
 msgid "A total of %(votes)s votes, thereof %(for)s ayes and %(against)s nays"
 msgstr ""
 
-msgid "Votes"
-msgstr ""
-
 msgid "Votes by User Group"
 msgstr ""
 
@@ -1875,9 +1941,6 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-msgid "All Events"
-msgstr ""
-
 msgid "Import Users"
 msgstr ""
 
@@ -1902,10 +1965,10 @@ msgstr ""
 msgid "Admin: Import Users"
 msgstr ""
 
-msgid "Users CSV"
+msgid "Paste the content of a CSV file, e.g. exported from Excel, with the 4 columns username, display name, email and badges (badges are optional, comma separated and with quotes around the list)"
 msgstr ""
 
-msgid "Paste the content of a CSV file, e.g. exported from Excel, with the 3 columns username, display name and email"
+msgid "Users CSV"
 msgstr ""
 
 msgid "Email Subject"
@@ -1927,6 +1990,9 @@ msgid "The name that will be displayed to other users."
 msgstr ""
 
 msgid "The email address of the user."
+msgstr ""
+
+msgid "for additional columns."
 msgstr ""
 
 msgid "The template for the mail to the users. You need to insert some placeholders into the email text."
@@ -1954,7 +2020,7 @@ msgstr ""
 msgid "These users could not be created:"
 msgstr ""
 
-msgid "These users where created, but we could not send out mails:"
+msgid "These users were created, but we could not send out mails:"
 msgstr ""
 
 msgid "Note that the following entities will be unbadged if this badge is deleted:"
@@ -1991,9 +2057,6 @@ msgid "Upload thumbnail icon. This is used instead of color to show the badge"
 msgstr ""
 
 msgid "Check to hide badge in user interface"
-msgstr ""
-
-msgid "visible"
 msgstr ""
 
 msgid "Group"
@@ -2153,12 +2216,6 @@ msgstr ""
 msgid "edited %s"
 msgstr ""
 
-msgid "No comments were made yet."
-msgstr ""
-
-msgid "No discussions were started yet."
-msgstr ""
-
 msgid "Add comment"
 msgstr ""
 
@@ -2183,6 +2240,12 @@ msgstr ""
 msgid "Validate email in order to discuss."
 msgstr ""
 
+msgid "No comments were made yet."
+msgstr ""
+
+msgid "No discussions were started yet."
+msgstr ""
+
 msgid "is pro"
 msgstr ""
 
@@ -2192,27 +2255,27 @@ msgstr ""
 msgid "(deleted)"
 msgstr ""
 
+msgid "edit"
+msgstr ""
+
 msgid "This comment has been deleted."
 msgstr ""
 
 msgid "This argument has been deleted."
 msgstr ""
 
-msgid "edit"
-msgstr ""
-
-msgid "1 Comment"
-msgstr ""
-
-msgid "1 Argument"
+#, python-format
+msgid "deleted %s"
 msgstr ""
 
 #, python-format
-msgid "%s Comments"
+msgid "edited %s by %s"
 msgstr ""
 
-#, python-format
-msgid "%s Arguments"
+msgid "history"
+msgstr ""
+
+msgid "report"
 msgstr ""
 
 msgid "reply"
@@ -2239,20 +2302,6 @@ msgstr ""
 msgid "Validate email in order to argue"
 msgstr ""
 
-msgid "report"
-msgstr ""
-
-msgid "history"
-msgstr ""
-
-#, python-format
-msgid "deleted %s"
-msgstr ""
-
-#, python-format
-msgid "edited %s by %s"
-msgstr ""
-
 msgid "Comment is..."
 msgstr ""
 
@@ -2266,12 +2315,6 @@ msgid "Neutral"
 msgstr ""
 
 msgid "Con"
-msgstr ""
-
-msgid "Enter comment text:"
-msgstr ""
-
-msgid "Enter argument text:"
 msgstr ""
 
 msgid "Allow others to edit this comment."
@@ -2292,12 +2335,6 @@ msgid "Context"
 msgstr ""
 
 msgid "History"
-msgstr ""
-
-msgid "for"
-msgstr ""
-
-msgid "against"
 msgstr ""
 
 msgid "abstained"
@@ -2410,11 +2447,10 @@ msgstr ""
 msgid "All current events."
 msgstr ""
 
-#, python-format
-msgid "%s"
+msgid "Show full proposal"
 msgstr ""
 
-msgid "more"
+msgid "Show full comment"
 msgstr ""
 
 msgid "Latest Events"
@@ -2501,10 +2537,10 @@ msgstr ""
 msgid "Delete current logo"
 msgstr ""
 
-msgid "Extra CSS"
+msgid "You can add css that will be used to style the instance."
 msgstr ""
 
-msgid "You can add css that will be used to style the instance."
+msgid "Extra CSS"
 msgstr ""
 
 msgid "Thumbnail badges width"
@@ -2526,6 +2562,9 @@ msgid "Require to propose a variant"
 msgstr ""
 
 msgid "Show norms navigation item"
+msgstr ""
+
+msgid "Show proposals navigation item"
 msgstr ""
 
 msgid "Use milestones"
@@ -2912,6 +2951,9 @@ msgstr ""
 msgid "Edit variant"
 msgstr ""
 
+msgid "Edit section"
+msgstr ""
+
 #, python-format
 msgid "Norm: %s"
 msgstr ""
@@ -2961,6 +3003,10 @@ msgstr ""
 msgid "New page"
 msgstr ""
 
+#, python-format
+msgid "Add section to %s"
+msgstr ""
+
 msgid "Create norm"
 msgstr ""
 
@@ -2968,6 +3014,9 @@ msgid "Norm title"
 msgstr ""
 
 msgid "New norm"
+msgstr ""
+
+msgid "Section content"
 msgstr ""
 
 msgid "Norm content"
@@ -3046,6 +3095,15 @@ msgid "Discussions"
 msgstr ""
 
 msgid "Amendments"
+msgstr ""
+
+msgid "Add section"
+msgstr ""
+
+msgid "This norm has been split into several sections."
+msgstr ""
+
+msgid "You can propose amendments and comment each section individually by using the controls on the right."
 msgstr ""
 
 msgid "hide sub-topics"
@@ -3157,17 +3215,20 @@ msgstr ""
 msgid "Are you sure you want to delete this proposal?"
 msgstr ""
 
+msgid "No Badges"
+msgstr ""
+
 msgid "thumbnail badge"
 msgstr ""
 
 msgid "No Thumbnail Badge"
 msgstr ""
 
-#, python-format
-msgid "Delegations: %s"
+msgid "No Thumbnail Badges"
 msgstr ""
 
-msgid "Delegations"
+#, python-format
+msgid "Delegations: %s"
 msgstr ""
 
 msgid "Propose new Variant"
@@ -3280,6 +3341,9 @@ msgstr ""
 msgid "%s Discussions"
 msgstr ""
 
+msgid "1 Proposed Implementation"
+msgstr ""
+
 #, python-format
 msgid "%s Proposed Implementations"
 msgstr ""
@@ -3369,12 +3433,6 @@ msgid "Main page"
 msgstr ""
 
 msgid "Who is receiving delegations?"
-msgstr ""
-
-msgid "Support this proposal"
-msgstr ""
-
-msgid "Oppose this proposal"
 msgstr ""
 
 #, python-format
@@ -3656,73 +3714,6 @@ msgstr ""
 msgid "Badges in instance"
 msgstr ""
 
-msgid "Startpage"
-msgstr ""
-
-#, python-format
-msgid "Hi %s."
-msgstr ""
-
-#, python-format
-msgid "Start by reading some <b><a href=\"%s\">proposals</a></b> or <b><a href=\"%s\">norms</a></b>. Or take a look at some of the other <b><a href=\"%s\">instances</a></b>."
-msgstr ""
-
-#, python-format
-msgid "Start by exploring the <b><a href=\"%s\">instances</a></b> and read some of the proposals and norms in the instances."
-msgstr ""
-
-msgid "If you join an instance, norms and proposals of the instance will be shown on your dashboard."
-msgstr ""
-
-msgid "You can reach your dashboard anytime by clicking on your user name on the top of the page."
-msgstr ""
-
-msgid "This is your Dashboard. Here you can find the list of instances your a member in, norms and proposals from these instance and a list of the pages you follow."
-msgstr ""
-
-#, python-format
-msgid "You can also return to the <a href=\"%s\">Page you came from</a>."
-msgstr ""
-
-msgid "Proposals in your instances"
-msgstr ""
-
-msgid "List all proposals"
-msgstr ""
-
-msgid "list all"
-msgstr ""
-
-msgid "Norms in your instances"
-msgstr ""
-
-msgid "List all pages"
-msgstr ""
-
-msgid "tutorial_dashboard_username"
-msgstr ""
-
-msgid "tutorial_dashboard_proposals"
-msgstr ""
-
-msgid "tutorial_dashboard_show_all"
-msgstr ""
-
-msgid "tutorial_dashboard_instances"
-msgstr ""
-
-msgid "tutorial_dashboard_watchlist"
-msgstr ""
-
-msgid "Your Instances"
-msgstr ""
-
-msgid "Your Watchlist"
-msgstr ""
-
-msgid "Current polls in your instances"
-msgstr ""
-
 msgid "Topic"
 msgstr ""
 
@@ -3950,39 +3941,25 @@ msgstr ""
 msgid "Select your prefered gender"
 msgstr ""
 
-msgid "Short biography"
-msgstr ""
-
 msgid "A bio will allow others to learn about you and perhaps even get you a few delegations."
 msgstr ""
 
-#, python-format
-msgid "Signed up %s"
+msgid "Short biography"
 msgstr ""
 
-#, python-format
-msgid "%s does not yet have a bio."
+msgid "Activity in"
 msgstr ""
 
-#, python-format
-msgid "joined %s"
+msgid "All instances"
 msgstr ""
 
-#, python-format
-msgid "signed up %s"
-msgstr ""
-
-msgid "send a message"
-msgstr ""
-
-#, python-format
-msgid "make %s"
+msgid "Delete this user."
 msgstr ""
 
 msgid "Resign from this instance."
 msgstr ""
 
-msgid "leave instance"
+msgid "leave"
 msgstr ""
 
 msgid "un-ban"
@@ -3991,7 +3968,57 @@ msgstr ""
 msgid "ban"
 msgstr ""
 
-msgid "Delete this user."
+msgid "Show my public profile"
+msgstr ""
+
+#, python-format
+msgid "%s does not yet have a bio."
+msgstr ""
+
+msgid "Account created"
+msgstr ""
+
+#, python-format
+msgid "Member in \"%s\" since"
+msgstr ""
+
+#, python-format
+msgid "Not a member in \"%s\""
+msgstr ""
+
+msgid "User groups"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "change group"
+msgstr ""
+
+msgid "User badges"
+msgstr ""
+
+msgid "Most recent activity"
+msgstr ""
+
+msgid "Member in the following instances"
+msgstr ""
+
+msgid "Member in other instances"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Send message"
+msgstr ""
+
+#, python-format
+msgid "joined %s"
+msgstr ""
+
+#, python-format
+msgid "signed up %s"
 msgstr ""
 
 msgid "Generate welcome link"

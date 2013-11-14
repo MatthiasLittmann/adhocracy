@@ -35,6 +35,13 @@ class RootController(BaseController):
         if format == 'rss':
             return EventController().all(format='rss')
 
+        name = config.get('adhocracy.redirect_startpage_to_instance')
+        if name != u'':
+            # get_entity_or_abort does no work for instances
+            instance = model.Instance.find(name)
+            if instance is not None:
+                redirect(h.entity_url(instance))
+
         data = {}
 
         instances_in_root = config.get_int(
@@ -88,7 +95,8 @@ class RootController(BaseController):
     def sitemap_xml(self):
         if c.instance:
             redirect(h.base_url('/sitemap.xml', None))
-        c.delegateables = model.Delegateable.all()
+        c.proposals = model.Proposal.all()
+        c.pages = model.Page.all(functions=[model.Page.NORM])
         c.change_time = datetime.utcnow()
         response.content_type = "text/xml"
         return render("sitemap.xml")

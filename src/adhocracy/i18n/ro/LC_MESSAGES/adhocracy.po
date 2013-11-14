@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Adhocracy\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-10-01 11:42+0200\n"
-"PO-Revision-Date: 2013-10-01 09:42+0000\n"
-"Last-Translator: tobib <tobias.bengfort@liqd.de>\n"
+"POT-Creation-Date: 2013-11-04 03:27+0100\n"
+"PO-Revision-Date: 2013-11-04 02:27+0000\n"
+"Last-Translator: Nicolas Dietrich <nicodietrich@gmail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/adhocracy/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -437,6 +437,10 @@ msgstr "Propunerea %s a fost stearsa."
 msgid "Proposal: %(proposal)s"
 msgstr "Propunerea: %(proposal)s"
 
+#, python-format
+msgid "You are not allowed to edit badge %i"
+msgstr ""
+
 msgid "relevance"
 msgstr "relevanta"
 
@@ -589,6 +593,24 @@ msgstr "Adresa de mail a fost confirmata."
 msgid "The activation link has been re-sent to your email address."
 msgstr "Linkul de activare a fosr retrimis pe adresa ta de mail."
 
+msgid "About me"
+msgstr ""
+
+msgid "Newest events"
+msgstr ""
+
+msgid "Contributions"
+msgstr ""
+
+msgid "Votes"
+msgstr "Voturi"
+
+msgid "Delegations"
+msgstr "Delegari"
+
+msgid "All Events"
+msgstr "Toate evenimentele"
+
 msgid "Invalid login"
 msgstr "Login gresit"
 
@@ -632,9 +654,6 @@ msgstr ""
 #, python-format
 msgid "Registration attempt on %s"
 msgstr ""
-
-msgid "tutorial_dashboard_title"
-msgstr "Tutorial: Pagina principala"
 
 msgid "The account has been suspended."
 msgstr "Contul a fost suspendat."
@@ -769,6 +788,9 @@ msgstr "Duplicate in ID-urile titlurilor introduse"
 #, python-format
 msgid "Could not find badges %s"
 msgstr "Nu am gaist titlurile %s"
+
+msgid "Duplicates in input set of user badge labels"
+msgstr ""
 
 #, python-format
 msgid "Cannot use global category %s in this instance"
@@ -1025,11 +1047,13 @@ msgid "Sort by number of votes for the proposal"
 msgstr ""
 
 msgid ""
-"Sort by the difference between number of votes for and against, and prefer "
-"newer proposals"
+"First sort by proposals with important badges, then by the difference "
+"between number of votes for and against and also prefer newer proposals"
 msgstr ""
 
-msgid "Prefer proposals where the gap between votes for and against is close"
+msgid ""
+"Prefer proposals where the gap between votes for and against is close, also "
+"proposals with more absolut votes are rated slightly higher"
 msgstr ""
 
 msgid "Sort by the characters of the proposal title"
@@ -1049,6 +1073,24 @@ msgstr "activitate"
 
 msgid "Badge"
 msgstr "Titlu"
+
+msgid "Instance hidden state"
+msgstr ""
+
+msgid "hidden"
+msgstr ""
+
+msgid "visible"
+msgstr "vizibil"
+
+msgid "Instance state"
+msgstr ""
+
+msgid "frozen"
+msgstr ""
+
+msgid "open"
+msgstr ""
 
 msgid "Instance"
 msgstr "Comunitate"
@@ -1132,6 +1174,15 @@ msgstr "se abtine"
 
 msgid "is against"
 msgstr "este impotriva"
+
+msgid "is"
+msgstr ""
+
+msgid "for"
+msgstr "pentru"
+
+msgid "against"
+msgstr "impotriva"
 
 #, python-format
 msgid "comment on %s"
@@ -1237,6 +1288,14 @@ msgstr "Modifica propunerea: %(proposal)s"
 #, python-format
 msgid "edited %(proposal)s"
 msgstr "a editat %(proposal)s"
+
+#, python-format
+msgid "Proposal badged: %(proposal)s"
+msgstr ""
+
+#, python-format
+msgid "badged %(proposal)s"
+msgstr ""
 
 #, python-format
 msgid "Poll cancelled: %(proposal)s"
@@ -1410,13 +1469,6 @@ msgstr "Raspunde la comentariu: %(topic)s"
 msgid "Comment Edit: %(topic)s"
 msgstr "Schimba Comentariu: %(topic)s"
 
-#, python-format
-msgid ""
-"\r\n"
-"\r\n"
-"More info: %(url)s"
-msgstr "⏎ ⏎ Mai multe informatii: %(url)s"
-
 msgid "This proposal is currently being voted on and cannot be modified."
 msgstr "Propunerea este in votare in acest moment si nu poate fi modificata."
 
@@ -1472,6 +1524,12 @@ msgstr "Click pentru a vota contra"
 msgid "Your current vote is already con"
 msgstr ""
 
+msgid "Topic is frozen. Click to view the list of votes."
+msgstr ""
+
+msgid "Instance is frozen. Click to view the list of votes."
+msgstr ""
+
 msgid "Voting has ended. Click to view the list of votes"
 msgstr "Votarea s-a terminat. Click pentru lista de voturi"
 
@@ -1499,6 +1557,13 @@ msgstr "Categorie"
 
 msgid "Thumbnail badge"
 msgstr ""
+
+#, python-format
+msgid ""
+"\r\n"
+"\r\n"
+"More info: %(url)s"
+msgstr "⏎ ⏎ Mai multe informatii: %(url)s"
 
 msgid "(Untitled)"
 msgstr "(Fara titlu)"
@@ -1570,6 +1635,9 @@ msgstr "Sumar scurt"
 msgid "Description"
 msgstr "Descriere"
 
+msgid "Please enter your feedback in here and help us to improve our website"
+msgstr ""
+
 msgid "Submit"
 msgstr "Trimite"
 
@@ -1586,6 +1654,9 @@ msgid "No Category"
 msgstr "Nici o categorie"
 
 msgid "Others"
+msgstr ""
+
+msgid "Default proposal sort order"
 msgstr ""
 
 msgid "code of conduct"
@@ -1795,9 +1866,6 @@ msgstr ""
 msgid "A total of %(votes)s votes, thereof %(for)s ayes and %(against)s nays"
 msgstr ""
 
-msgid "Votes"
-msgstr "Voturi"
-
 msgid "Votes by User Group"
 msgstr ""
 
@@ -1932,9 +2000,6 @@ msgstr "Atentie: Este posibilitatea sa te scoti singur din Adhocracy. Modifica c
 msgid "Permissions"
 msgstr "Permisiuni"
 
-msgid "All Events"
-msgstr "Toate evenimentele"
-
 msgid "Import Users"
 msgstr "Importa Utilizatori"
 
@@ -1959,13 +2024,14 @@ msgstr "Administrare site"
 msgid "Admin: Import Users"
 msgstr "Admin: Importa Utilizatori"
 
+msgid ""
+"Paste the content of a CSV file, e.g. exported from Excel, with the 4 "
+"columns username, display name, email and badges (badges are optional, comma"
+" separated and with quotes around the list)"
+msgstr ""
+
 msgid "Users CSV"
 msgstr "Lista utilizatori CSV"
-
-msgid ""
-"Paste the content of a CSV file, e.g. exported from Excel, with the 3 "
-"columns username, display name and email"
-msgstr "Copie continutul fisierului CSV, ex. exportat din Excel, cu 3 coloane nume utilizator, nume afisat si adresa de email"
 
 msgid "Email Subject"
 msgstr "Subiect Email"
@@ -1987,6 +2053,9 @@ msgstr "Numele care va fi afisat celorlalti utilizatori."
 
 msgid "The email address of the user."
 msgstr "Adresa email a utilizatorului."
+
+msgid "for additional columns."
+msgstr ""
 
 msgid ""
 "The template for the mail to the users. You need to insert some placeholders"
@@ -2017,8 +2086,8 @@ msgstr "Urmatoarele erori au aparut cand s-au generat utilizatorii"
 msgid "These users could not be created:"
 msgstr "Utilizatorii urmatori nu au putut fi creati:"
 
-msgid "These users where created, but we could not send out mails:"
-msgstr "Acesti utilizatori au fost creati, dar nu am reusit sa le trimitem emailuri:"
+msgid "These users were created, but we could not send out mails:"
+msgstr ""
 
 msgid ""
 "Note that the following entities will be unbadged if this badge is deleted:"
@@ -2056,9 +2125,6 @@ msgstr ""
 
 msgid "Check to hide badge in user interface"
 msgstr "Selecteaza pentru a ascunde titlul in interfata utilizator"
-
-msgid "visible"
-msgstr "vizibil"
 
 msgid "Group"
 msgstr "Grup"
@@ -2221,12 +2287,6 @@ msgstr "pe %s"
 msgid "edited %s"
 msgstr "a editat %s"
 
-msgid "No comments were made yet."
-msgstr "Nici un comentariu deocamdata."
-
-msgid "No discussions were started yet."
-msgstr ""
-
 msgid "Add comment"
 msgstr "Adauga un comentariu"
 
@@ -2251,6 +2311,12 @@ msgstr "Valideaza adresa de email pentru a aduga comentarii."
 msgid "Validate email in order to discuss."
 msgstr ""
 
+msgid "No comments were made yet."
+msgstr "Nici un comentariu deocamdata."
+
+msgid "No discussions were started yet."
+msgstr ""
+
 msgid "is pro"
 msgstr "este pentru"
 
@@ -2260,28 +2326,28 @@ msgstr "este contra"
 msgid "(deleted)"
 msgstr "(sters)"
 
+msgid "edit"
+msgstr "modifica"
+
 msgid "This comment has been deleted."
 msgstr "Acest comentariu a fost sters."
 
 msgid "This argument has been deleted."
 msgstr ""
 
-msgid "edit"
-msgstr "modifica"
-
-msgid "1 Comment"
-msgstr "1 Comentariu"
-
-msgid "1 Argument"
-msgstr ""
+#, python-format
+msgid "deleted %s"
+msgstr "a fost sters %s"
 
 #, python-format
-msgid "%s Comments"
-msgstr "%s Comentarii"
+msgid "edited %s by %s"
+msgstr "editat %s de catre %s"
 
-#, python-format
-msgid "%s Arguments"
-msgstr ""
+msgid "history"
+msgstr "istoric"
+
+msgid "report"
+msgstr "raport"
 
 msgid "reply"
 msgstr "raspunde"
@@ -2307,20 +2373,6 @@ msgstr "Valideaza adresa de email pentru a aduga comentarii."
 msgid "Validate email in order to argue"
 msgstr ""
 
-msgid "report"
-msgstr "raport"
-
-msgid "history"
-msgstr "istoric"
-
-#, python-format
-msgid "deleted %s"
-msgstr "a fost sters %s"
-
-#, python-format
-msgid "edited %s by %s"
-msgstr "editat %s de catre %s"
-
 msgid "Comment is..."
 msgstr "Comentariul este..."
 
@@ -2335,12 +2387,6 @@ msgstr "Neutru"
 
 msgid "Con"
 msgstr "Contra"
-
-msgid "Enter comment text:"
-msgstr ""
-
-msgid "Enter argument text:"
-msgstr ""
 
 msgid "Allow others to edit this comment."
 msgstr "Permite celorlalti sa editeze acest comentariu"
@@ -2361,12 +2407,6 @@ msgstr "Context"
 
 msgid "History"
 msgstr "Istoric"
-
-msgid "for"
-msgstr "pentru"
-
-msgid "against"
-msgstr "impotriva"
 
 msgid "abstained"
 msgstr "abtinut"
@@ -2489,12 +2529,11 @@ msgstr "Super"
 msgid "All current events."
 msgstr "Toate evenimentele curente."
 
-#, python-format
-msgid "%s"
-msgstr "%s"
+msgid "Show full proposal"
+msgstr ""
 
-msgid "more"
-msgstr "mai mult"
+msgid "Show full comment"
+msgstr ""
 
 msgid "Latest Events"
 msgstr "Cele mai noi Evenimente"
@@ -2586,11 +2625,11 @@ msgstr "Logo curent"
 msgid "Delete current logo"
 msgstr "Sterge logo-ul curent"
 
-msgid "Extra CSS"
-msgstr "Still CSS aditional"
-
 msgid "You can add css that will be used to style the instance."
 msgstr "Poti adauga un stil css care va fi utilizat ca stil grafic al comunitatii."
+
+msgid "Extra CSS"
+msgstr "Still CSS aditional"
 
 msgid "Thumbnail badges width"
 msgstr ""
@@ -2611,6 +2650,9 @@ msgid "Require to propose a variant"
 msgstr "Cere sa fie propusa o varianta"
 
 msgid "Show norms navigation item"
+msgstr ""
+
+msgid "Show proposals navigation item"
 msgstr ""
 
 msgid "Use milestones"
@@ -3018,6 +3060,9 @@ msgstr "Creeaza o propunere noua..."
 msgid "Edit variant"
 msgstr "Modifica varianta"
 
+msgid "Edit section"
+msgstr ""
+
 #, python-format
 msgid "Norm: %s"
 msgstr "Document: %s"
@@ -3067,6 +3112,10 @@ msgstr "Etichetele documentelor"
 msgid "New page"
 msgstr "Pagina noua"
 
+#, python-format
+msgid "Add section to %s"
+msgstr ""
+
 msgid "Create norm"
 msgstr "Creeaza document"
 
@@ -3075,6 +3124,9 @@ msgstr "Titlul documentului"
 
 msgid "New norm"
 msgstr "Document nou"
+
+msgid "Section content"
+msgstr ""
 
 msgid "Norm content"
 msgstr "Continut document"
@@ -3152,6 +3204,17 @@ msgid "Discussions"
 msgstr "Discutii"
 
 msgid "Amendments"
+msgstr ""
+
+msgid "Add section"
+msgstr ""
+
+msgid "This norm has been split into several sections."
+msgstr ""
+
+msgid ""
+"You can propose amendments and comment each section individually by using "
+"the controls on the right."
 msgstr ""
 
 msgid "hide sub-topics"
@@ -3272,18 +3335,21 @@ msgstr "Urmeaza sa pornesti votul. Cand faci asta, nu vei mai putea sa <strong>m
 msgid "Are you sure you want to delete this proposal?"
 msgstr "Confirmi stergerea propunerii?"
 
+msgid "No Badges"
+msgstr ""
+
 msgid "thumbnail badge"
 msgstr ""
 
 msgid "No Thumbnail Badge"
 msgstr ""
 
+msgid "No Thumbnail Badges"
+msgstr ""
+
 #, python-format
 msgid "Delegations: %s"
 msgstr "Delegatii: %s"
-
-msgid "Delegations"
-msgstr "Delegari"
 
 msgid "Propose new Variant"
 msgstr "Propune o noua Varianta"
@@ -3399,6 +3465,9 @@ msgstr "Sterge propunerea."
 msgid "%s Discussions"
 msgstr "%s Discutii"
 
+msgid "1 Proposed Implementation"
+msgstr ""
+
 #, python-format
 msgid "%s Proposed Implementations"
 msgstr "%s Implementari propuse"
@@ -3491,12 +3560,6 @@ msgstr "Pagina principala"
 
 msgid "Who is receiving delegations?"
 msgstr "Cine a primit delegari?"
-
-msgid "Support this proposal"
-msgstr "Sustine propunerea"
-
-msgid "Oppose this proposal"
-msgstr "Opune-te propunerii"
 
 #, python-format
 msgid "%s has been adopted %s."
@@ -3787,85 +3850,6 @@ msgstr "Exemplu:"
 msgid "Badges in instance"
 msgstr ""
 
-msgid "Startpage"
-msgstr "Pagina de pornire"
-
-#, python-format
-msgid "Hi %s."
-msgstr "Buna %s."
-
-#, python-format
-msgid ""
-"Start by reading some <b><a href=\"%s\">proposals</a></b> or <b><a "
-"href=\"%s\">norms</a></b>. Or take a look at some of the other <b><a "
-"href=\"%s\">instances</a></b>."
-msgstr "Incepe prin a citi <b><a href=\"%s\">propunerile</a></b> sau <b><a href=\"%s\">documentele</a></b>. Sau exploreaza celelalte <b><a href=\"%s\">comunitati</a></b>"
-
-#, python-format
-msgid ""
-"Start by exploring the <b><a href=\"%s\">instances</a></b> and read some of "
-"the proposals and norms in the instances."
-msgstr "Incepe prin a explora <b><a href=\"%s\">comunitatile</a></b> si citeste cateva propuneri si documente din acele comunitati."
-
-msgid ""
-"If you join an instance, norms and proposals of the instance will be shown "
-"on your dashboard."
-msgstr "Daca te alaturi unei comunitati, documentele si propunerile comunitatii vor aparea pe prima pagina."
-
-msgid ""
-"You can reach your dashboard anytime by clicking on your user name on the "
-"top of the page."
-msgstr "Poti ajunge la prima pagina apasand pe numele tau in partea de sus a paginii."
-
-msgid ""
-"This is your Dashboard. Here you can find the list of instances your a "
-"member in, norms and proposals from these instance and a list of the pages "
-"you follow."
-msgstr "Aceasta este Prima pagina. Aici poti sa vezi toate comunitatile in care esti membru, documentele si propunerile din aceste comunitati si o lista a paginilor pe care le urmaresti."
-
-#, python-format
-msgid "You can also return to the <a href=\"%s\">Page you came from</a>."
-msgstr "Poti sa te re-intorci la <a href=\"%s\">Pagina anterioara</a>."
-
-msgid "Proposals in your instances"
-msgstr "Propuneri in comunitatile tale"
-
-msgid "List all proposals"
-msgstr "Afiseaza toate propunerile"
-
-msgid "list all"
-msgstr "afiseaza toate"
-
-msgid "Norms in your instances"
-msgstr "Documente in comunitatile tale"
-
-msgid "List all pages"
-msgstr "Afiseaza toate paginile"
-
-msgid "tutorial_dashboard_username"
-msgstr "Aici este numele utilizatorului"
-
-msgid "tutorial_dashboard_proposals"
-msgstr "Propuneri in comunitatile tale"
-
-msgid "tutorial_dashboard_show_all"
-msgstr "Apasa aici ca sa afisezi toate propunerile"
-
-msgid "tutorial_dashboard_instances"
-msgstr "Comunitatile tale"
-
-msgid "tutorial_dashboard_watchlist"
-msgstr "Favoritele tale"
-
-msgid "Your Instances"
-msgstr "Comunitatile tale"
-
-msgid "Your Watchlist"
-msgstr "Lista ta de Favorite"
-
-msgid "Current polls in your instances"
-msgstr "Voturi in curs in comunitatile tale"
-
 msgid "Topic"
 msgstr "Subiect"
 
@@ -4108,21 +4092,79 @@ msgstr ""
 msgid "Select your prefered gender"
 msgstr ""
 
-msgid "Short biography"
-msgstr "Scurta biografie"
-
 msgid ""
 "A bio will allow others to learn about you and perhaps even get you a few "
 "delegations."
 msgstr "O scurta biografie le va permite celorlalti sa afle mai multe despre tine si iti maresc sansele sa obtii mai multe delegari de vot."
 
-#, python-format
-msgid "Signed up %s"
-msgstr "Inregistrat pentru %s"
+msgid "Short biography"
+msgstr "Scurta biografie"
+
+msgid "Activity in"
+msgstr ""
+
+msgid "All instances"
+msgstr ""
+
+msgid "Delete this user."
+msgstr "Sterge utilizator."
+
+msgid "Resign from this instance."
+msgstr "Paraseste aceasta comunitate."
+
+msgid "leave"
+msgstr ""
+
+msgid "un-ban"
+msgstr "de-blocat"
+
+msgid "ban"
+msgstr "blocat"
+
+msgid "Show my public profile"
+msgstr ""
 
 #, python-format
 msgid "%s does not yet have a bio."
 msgstr "%s nu are inca o biografie."
+
+msgid "Account created"
+msgstr ""
+
+#, python-format
+msgid "Member in \"%s\" since"
+msgstr ""
+
+#, python-format
+msgid "Not a member in \"%s\""
+msgstr ""
+
+msgid "User groups"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "change group"
+msgstr ""
+
+msgid "User badges"
+msgstr ""
+
+msgid "Most recent activity"
+msgstr ""
+
+msgid "Member in the following instances"
+msgstr ""
+
+msgid "Member in other instances"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Send message"
+msgstr ""
 
 #, python-format
 msgid "joined %s"
@@ -4131,28 +4173,6 @@ msgstr "devenit membru pe %s"
 #, python-format
 msgid "signed up %s"
 msgstr "inregistrat pentru %s"
-
-msgid "send a message"
-msgstr "trimite un mesaj"
-
-#, python-format
-msgid "make %s"
-msgstr "face %s"
-
-msgid "Resign from this instance."
-msgstr "Paraseste aceasta comunitate."
-
-msgid "leave instance"
-msgstr "paraseste comunitate"
-
-msgid "un-ban"
-msgstr "de-blocat"
-
-msgid "ban"
-msgstr "blocat"
-
-msgid "Delete this user."
-msgstr "Sterge utilizator."
 
 msgid "Generate welcome link"
 msgstr ""

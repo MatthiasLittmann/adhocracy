@@ -49,6 +49,7 @@ from adhocracy.lib.helpers.fanstatic_helper import (FanstaticNeedHelper,
 from adhocracy.lib.helpers import feedback_helper as feedback
 from adhocracy.lib.helpers.url import build
 from adhocracy.lib.helpers.site_helper import base_url
+from adhocracy.lib.text import render
 from adhocracy.lib.watchlist import make_watch, find_watch
 from adhocracy import model, static
 from adhocracy.i18n import countdown_time, format_date
@@ -91,7 +92,7 @@ def comments_sorted(comments, root=None, variant=None, key=None,
     from adhocracy.lib.tiles.comment_tiles import CommentTile
     comments = [c for c in comments if c.reply == root and
                 ((variant is None and c.variant == Text.HEAD)
-                or c.variant == variant)]
+                 or c.variant == variant)]
     if not include_deleted:
         comments = filter(lambda x: not x.is_deleted(), comments)
     _comments = []

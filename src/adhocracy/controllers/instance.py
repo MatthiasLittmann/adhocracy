@@ -107,6 +107,8 @@ class InstanceContentsEditForm(formencode.Schema):
         not_empty=False, if_empty=False, if_missing=False)
     show_norms_navigation = validators.StringBool(
         not_empty=False, if_empty=False, if_missing=False)
+    show_proposals_navigation = validators.StringBool(
+        not_empty=False, if_empty=False, if_missing=False)
     require_selection = validators.StringBool(
         not_empty=False, if_empty=False, if_missing=False)
     frozen = validators.StringBool(
@@ -123,12 +125,13 @@ class InstanceContentsEditForm(formencode.Schema):
 
 class InstanceVotingEditForm(formencode.Schema):
     allow_extra_fields = True
-    allow_adopt = validators.StringBool(not_empty=False, if_empty=False,
-                                        if_missing=False)
     allow_delegate = validators.StringBool(not_empty=False, if_empty=False,
                                            if_missing=False)
-    activation_delay = validators.Int(not_empty=True)
-    required_majority = validators.Number(not_empty=True)
+    if not config.get_bool('adhocracy.hide_final_adoption_votings'):
+        allow_adopt = validators.StringBool(not_empty=False, if_empty=False,
+                                            if_missing=False)
+        activation_delay = validators.Int(not_empty=True)
+        required_majority = validators.Number(not_empty=True)
     votedetail_badges = forms.ValidUserBadges()
 
 
@@ -154,7 +157,9 @@ class InstanceController(BaseController):
     def index(self, format="html"):
 
         c.active_global_nav = 'instances'
-        c.instance_pager = pager.solr_instance_pager()
+
+        include_hidden = h.has_permission('global.admin')
+        c.instance_pager = pager.solr_instance_pager(include_hidden)
 
         if format == 'json':
             return render_json(c.instance_pager)
@@ -166,7 +171,7 @@ class InstanceController(BaseController):
             return render("/instance/index.html")
 
     @guard.instance.create()
-    def new(self):
+    def new(self, format=u'html'):
 
         data = {}
         protocol = config.get('adhocracy.protocol').strip()
@@ -181,7 +186,8 @@ class InstanceController(BaseController):
             data['url_post'] = '.%s' % domain
             data['url_right_align'] = True
 
-        return render("/instance/new.html", data)
+        return render("/instance/new.html", data,
+                      overlay=format == u'overlay')
 
     @csrf.RequireInternalRequest(methods=['POST'])
     @guard.instance.create()
@@ -216,8 +222,12 @@ class InstanceController(BaseController):
                                  c.page_instance.allow_delegate else
                                  _('Delegations are disabled.'))
 
-        if config.get_bool('adhocracy.show_instance_overview_milestones')\
-           and c.page_instance.milestones:
+        overview_contents = config.get_list(
+            'adhocracy.instance_overview_contents')
+        overview_sidebar_contents = config.get_list(
+            'adhocracy.instance_overview_sidebar_contents')
+
+        if u'milestones' in overview_contents and c.page_instance.milestones:
 
             number = config.get_int(
                 'adhocracy.number_instance_overview_milestones')
@@ -230,26 +240,32 @@ class InstanceController(BaseController):
                 enable_pages=False, default_sort=sorting.milestone_time)
 
         c.events_pager = None
-        if config.get_bool('adhocracy.show_instance_overview_events'):
-            events = model.Event.find_by_instance(c.page_instance, limit=3)
+        if u'events' in overview_contents:
+            events = model.Event.find_by_instance(c.page_instance, limit=10)
             c.events_pager = pager.events(events,
                                           enable_pages=False,
                                           enable_sorts=False)
 
-        proposals = model.Proposal.all(instance=c.page_instance)
+        c.sidebar_events_pager = None
+        if u'events' in overview_sidebar_contents:
+            events = model.Event.find_by_instance(c.page_instance, limit=3)
+            c.sidebar_events_pager = pager.events(events,
+                                                  enable_pages=False,
+                                                  enable_sorts=False,
+                                                  row_type=u'sidebar_row')
 
-        show_new_proposals = config.get_bool(
-            'adhocracy.show_instance_overview_proposals_new')
-        c.new_proposals_pager = None
-        if show_new_proposals:
-            c.new_proposals_pager = pager.proposals(
-                proposals, size=7, enable_sorts=False,
-                enable_pages=False, default_sort=sorting.entity_newest)
+        c.proposals_pager = None
+        if u'proposals' in overview_contents:
+            proposals = model.Proposal.all(instance=c.page_instance)
 
-        c.all_proposals_pager = None
-        if config.get_bool('adhocracy.show_instance_overview_proposals_all'):
-            c.all_proposals_pager = pager.proposals(proposals, size=100,
+            if config.get_bool(
+                    'adhocracy.show_instance_overview_proposals_all'):
+                c.proposals_pager = pager.proposals(proposals, size=100,
                                                     initial_size=100)
+            else:
+                c.proposals_pager = pager.proposals(
+                    proposals, size=7, enable_sorts=False,
+                    enable_pages=False, default_sort=sorting.entity_newest)
 
         c.stats = None
         if config.get_bool('adhocracy.show_instance_overview_stats'):
@@ -271,6 +287,7 @@ class InstanceController(BaseController):
                       u"It isn't possible to perform any changes to the "
                       u"instance, but all content is available to be read."),
                     'warning')
+
         if format == 'overlay':
             return render("/instance/show.html", overlay=True)
         else:
@@ -326,15 +343,15 @@ class InstanceController(BaseController):
 
     @guard.perm("global.admin")
     def badges(self, id, errors=None, format='html'):
-        instance = get_entity_or_abort(model.Instance, id)
-        c.badges = self._editable_badges(instance)
+        c.page_instance = get_entity_or_abort(model.Instance, id)
+        c.badges = self._editable_badges(c.page_instance)
         defaults = {
-            'badge': [str(badge.id) for badge in instance.badges],
+            'badge': [str(badge.id) for badge in c.page_instance.badges],
             '_tok': csrf.token_id(),
         }
         if format == 'ajax':
-            checked = [badge.id for badge in instance.badges]
-            json = {'title': instance.label,
+            checked = [badge.id for badge in c.page_instance.badges]
+            json = {'title': c.page_instance.label,
                     'badges': [{
                         'id': badge.id,
                         'description': badge.description,
@@ -343,7 +360,7 @@ class InstanceController(BaseController):
             return render_json(json)
         else:
             return formencode.htmlfill.render(
-                render("/instance/badges.html"),
+                render("/instance/badges.html", overlay=format == u'overlay'),
                 defaults=defaults)
 
     @validate(schema=InstanceBadgesForm(), form='badges')
@@ -452,7 +469,7 @@ class InstanceController(BaseController):
         return render("/instance/settings_general.html")
 
     @RequireInstance
-    def settings_general(self, id):
+    def settings_general(self, id, format=u'html'):
         c.page_instance = self._get_current_instance(id)
         require.instance.edit(c.page_instance)
         form_content = self._settings_general_form(id)
@@ -581,6 +598,8 @@ class InstanceController(BaseController):
                 'editable_comments_default':
                 instance.editable_comments_default,
                 'show_norms_navigation': instance.show_norms_navigation,
+                'show_proposals_navigation':
+                instance.show_proposals_navigation,
                 'frozen': instance.frozen,
                 '_tok': csrf.token_id()})
 
@@ -598,7 +617,8 @@ class InstanceController(BaseController):
             ['allow_propose', 'allow_index', 'frozen', 'milestones',
              'use_norms', 'require_selection', 'allow_propose_changes',
              'hide_global_categories', 'editable_comments_default',
-             'show_norms_navigation', 'allow_thumbnailbadges'])
+             'show_norms_navigation', 'show_proposals_navigation',
+             'allow_thumbnailbadges'])
         return self._settings_result(updated, c.page_instance, 'contents')
 
     def _settings_voting_form(self, id):
@@ -657,10 +677,12 @@ class InstanceController(BaseController):
         c.page_instance = self._get_current_instance(id)
         require.instance.edit(c.page_instance)
 
+        updated_attributes = ['allow_delegate']
+        if not config.get_bool('adhocracy.hide_final_adoption_votings'):
+            updated_attributes.extend(
+                ['required_majority', 'activation_delay', 'allow_adopt'])
         updated = update_attributes(
-            c.page_instance, self.form_result,
-            ['required_majority', 'activation_delay', 'allow_adopt',
-             'allow_delegate'])
+            c.page_instance, self.form_result, updated_attributes)
 
         if votedetail.is_enabled():
             new_badges = self.form_result['votedetail_badges']
@@ -814,7 +836,8 @@ class InstanceController(BaseController):
                    topics=[])
         return ret_success(format=format,
                            message=_("The instance %s has been deleted.") %
-                           c.page_instance.label)
+                           c.page_instance.label,
+                           force_path='/')
 
     @RequireInstance
     @csrf.RequireInternalRequest()

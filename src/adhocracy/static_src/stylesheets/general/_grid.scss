@@ -47,6 +47,11 @@
     * html iframe, * html frame { overflow:auto; }
     * html frameset { overflow:hidden; }
 
+    /* without this, html will be 100vw max */
+    html {
+        min-width: 1004px;
+    }
+
     body {
     /* (en) Fix for rounding errors when scaling font sizes in older versions of Opera browser */
     /* (de) Beseitigung von Rundungsfehler beim Skalieren von Schriftgrößen in älteren Opera Versionen */
@@ -306,7 +311,10 @@
 
     /* (en) Marginal areas */
     /* (de) Randbereiche */
-    body { padding: 0; }
+    body {
+        padding: 0;
+        min-height: 100vh;
+    }
 
     /* Layout Alignment | Layout-Ausrichtung */
     .page_margins { margin: 0 auto; }
@@ -349,7 +357,15 @@
     #settings #col1_content { padding: 0 15px 0 10px }
     #settings #col3_content { margin: 0 15px 0 23px }
 
-    #settings #col3 .affix { width: 164px; top: 20px; }
+    #settings #col3_content {
+        margin: 0;
+        .well {
+            width: 164px;
+        }
+        .affix {
+            top: 20px;
+        }
+    }
 
     .subcl { padding: 0 20px 0 0; }
     .subc { padding: 0 10px; }

@@ -6,6 +6,8 @@ import urllib
 import formencode
 from formencode import ForEach, htmlfill, validators
 
+from sqlalchemy.sql.expression import not_
+
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort
 from pylons.controllers.util import redirect
@@ -43,6 +45,9 @@ from adhocracy.lib.templating import render, render_json, ret_abort
 from adhocracy.lib.templating import ret_success
 from adhocracy.lib.queue import update_entity
 from adhocracy.lib.util import get_entity_or_abort, random_token
+
+from adhocracy.lib.event.types import (S_VOTE, S_DELEGATION, S_PROPOSAL,
+                                       S_COMMENT, S_PAGE, S_CONTRIBUTION)
 
 
 log = logging.getLogger(__name__)
@@ -191,7 +196,7 @@ class UserController(BaseController):
         c.users_pager = solr_global_users_pager()
         return render("/user/all.html")
 
-    def new(self, defaults=None):
+    def new(self, defaults=None, format=u'html'):
         if not h.allow_user_registration():
             return ret_abort(
                 _("Sorry, registration has been disabled by administrator."),
@@ -209,7 +214,8 @@ class UserController(BaseController):
             defaults['_tok'] = token_id()
             add_static_content(data, u'adhocracy.static_agree_text',
                                body_key=u'agree_text', title_key='_ignored')
-            return htmlfill.render(render("/user/register.html", data),
+            return htmlfill.render(render("/user/register.html", data,
+                                          overlay=format == u'overlay'),
                                    defaults=defaults)
 
     @RequireInternalRequest(methods=['POST'])
@@ -300,7 +306,10 @@ class UserController(BaseController):
 
     def edit(self, id):
         """ legacy url """
-        redirect(h.entity_url(c.user, instance=c.instance, member='settings'))
+        page_user = get_entity_or_abort(model.User, id,
+                                        instance_filter=False)
+        redirect(h.entity_url(page_user, instance=c.instance,
+                              member='settings'))
 
     def _settings_result(self, updated, user, setting_name, message=None):
         '''
@@ -346,7 +355,7 @@ class UserController(BaseController):
         if c.instance is None:
             c.active_global_nav = 'user'
 
-    def _settings_personal_form(self, id):
+    def _settings_personal_form(self, id, format=u'html'):
         self._settings_all(id)
         c.settings_menu = settings_menu(c.page_user, 'personal')
 
@@ -362,10 +371,11 @@ class UserController(BaseController):
             {'value': u'm', 'label': _(u'Male')},
         ]
 
-        return render("/user/settings_personal.html")
+        return render("/user/settings_personal.html",
+                      overlay=format == u'overlay')
 
-    def settings_personal(self, id):
-        form_content = self._settings_personal_form(id)
+    def settings_personal(self, id, format=u'html'):
+        form_content = self._settings_personal_form(id, format=format)
         return htmlfill.render(
             form_content,
             defaults={
@@ -395,7 +405,7 @@ class UserController(BaseController):
 
         return self._settings_result(updated, c.page_user, 'personal')
 
-    def _settings_login_form(self, id):
+    def _settings_login_form(self, id, format=u'html'):
         self._settings_all(id)
         c.settings_menu = settings_menu(c.page_user, 'login')
         c.locales = []
@@ -404,10 +414,11 @@ class UserController(BaseController):
                               'label': locale.display_name,
                               'selected': locale == c.user.locale})
 
-        return render("/user/settings_login.html")
+        return render("/user/settings_login.html",
+                      overlay=format == u'overlay')
 
-    def settings_login(self, id):
-        form_content = self._settings_login_form(id)
+    def settings_login(self, id, format=u'html'):
+        form_content = self._settings_login_form(id, format=format)
         return htmlfill.render(
             form_content,
             defaults={
@@ -433,7 +444,7 @@ class UserController(BaseController):
 
         return self._settings_result(updated, c.page_user, 'login')
 
-    def _settings_notifications_form(self, id):
+    def _settings_notifications_form(self, id, format=u'html'):
         self._settings_all(id)
         c.settings_menu = settings_menu(c.page_user, 'notifications')
 
@@ -443,10 +454,11 @@ class UserController(BaseController):
                               'label': locale.display_name,
                               'selected': locale == c.user.locale})
 
-        return render("/user/settings_notifications.html")
+        return render("/user/settings_notifications.html",
+                      overlay=format == u'overlay')
 
-    def settings_notifications(self, id):
-        form_content = self._settings_notifications_form(id)
+    def settings_notifications(self, id, format=u'html'):
+        form_content = self._settings_notifications_form(id, format=format)
         return htmlfill.render(
             form_content,
             defaults={
@@ -488,7 +500,7 @@ class UserController(BaseController):
         #    model.meta.Session.add(c.page_user.twitter)
         return self._settings_result(updated, c.page_user, 'notifications')
 
-    def _settings_advanced_form(self, id):
+    def _settings_advanced_form(self, id, format=u'html'):
         self._settings_all(id)
         c.tile = tiles.user.UserTile(c.page_user)
         c.settings_menu = settings_menu(c.page_user, 'advanced')
@@ -499,10 +511,11 @@ class UserController(BaseController):
                          for size in [10, 20, 50, 100, 200]]
         c.sorting_orders = PROPOSAL_SORTS
 
-        return render("/user/settings_advanced.html")
+        return render("/user/settings_advanced.html",
+                      overlay=format == u'overlay')
 
-    def settings_advanced(self, id):
-        form_content = self._settings_advanced_form(id)
+    def settings_advanced(self, id, format=u'html'):
+        form_content = self._settings_advanced_form(id, format=format)
         return htmlfill.render(
             form_content,
             defaults={
@@ -526,7 +539,7 @@ class UserController(BaseController):
 
         return self._settings_result(updated, c.page_user, 'advanced')
 
-    def _settings_optional_form(self, id, data={}):
+    def _settings_optional_form(self, id, data={}, format=u'html'):
         if not config.get('adhocracy.user.optional_attributes'):
             abort(400, _("No optional attributes defined."))
         self._settings_all(id)
@@ -538,10 +551,11 @@ class UserController(BaseController):
         add_static_content(data,
                            u'adhocracy.static_optional_path')
 
-        return render("/user/settings_optional.html", data)
+        return render("/user/settings_optional.html", data,
+                      overlay=format == u'overlay')
 
-    def settings_optional(self, id):
-        form_content = self._settings_optional_form(id)
+    def settings_optional(self, id, format=u'html'):
+        form_content = self._settings_optional_form(id, format=format)
         defaults = c.page_user.optional_attributes or {}
 
         # Workaround, as htmlfill will match select option values in their
@@ -720,7 +734,7 @@ class UserController(BaseController):
                 model.meta.Session.commit()
                 redirect(h.entity_url(c.instance))
             else:
-                redirect(h.base_url('/instance', None))
+                redirect(h.user.post_register_url(c.page_user))
         else:
             h.flash(_("Your email has been confirmed."), 'success')
             redirect(h.entity_url(c.page_user))
@@ -740,43 +754,210 @@ class UserController(BaseController):
             entity=c.page_user, member='settings/notifications',
             format=None, force_path=path)
 
-    def show(self, id, format='html'):
+    @staticmethod
+    def _get_profile_nav(user, active_key):
+        c.member = {
+            u'about': u'about',
+            u'activity': None,
+            u'contributions': u'latest_contributions',
+            u'votes': u'latest_votes',
+            u'delegations': u'latest_delegations',
+        }[active_key]
+        nav = [
+            (u'about' == active_key, _(u'About me'), h.entity_url(
+                c.page_user, member='about')),
+            (u'activity' == active_key, _(u'Newest events'), h.entity_url(
+                c.page_user)),
+            (u'contributions' == active_key, _(u'Contributions'), h.entity_url(
+                c.page_user, member='latest_contributions')),
+            (u'votes' == active_key, _(u'Votes'), h.entity_url(
+                c.page_user, member='latest_votes')),
+        ]
+        if c.instance is None or c.instance.allow_delegate:
+            nav.append((u'delegations' == active_key,
+                       _(u'Delegations'),
+                       h.entity_url(c.page_user,
+                                    member='latest_delegations')))
+        return nav
+
+    @staticmethod
+    def _get_dashboard_nav(user, active_key):
+        c.member = {
+            u'all': None,
+            u'contributions': u'contributions',
+            u'votes': u'votes',
+            u'delegations': u'delegations',
+        }[active_key]
+        nav = [
+            (u'all' == active_key, _(u'All Events'), h.base_url(
+                u'/user/dashboard', instance=c.instance)),
+            (u'contributions' == active_key, _(u'Contributions'), h.base_url(
+                u'/user/dashboard/contributions', instance=c.instance)),
+            (u'votes' == active_key, _(u'Votes'), h.base_url(
+                u'/user/dashboard/votes', instance=c.instance)),
+        ]
+        if c.instance is None or c.instance.allow_delegate:
+            nav.append((u'delegations' == active_key,
+                       _(u'Delegations'),
+                       h.base_url(u'/user/dashboard/delegations',
+                                  instance=c.instance)))
+        return nav
+
+    def _get_events(self, nr_events=None, event_filter=[]):
+        """get events triggerd by this user"""
+        query = model.meta.Session.query(model.Event)
+        query = query.filter(model.Event.user == c.page_user)
+        if c.instance:
+            query = query.filter(model.Event.instance == c.instance)
+        else:
+            query = query.join(model.Instance) \
+                         .filter(not_(model.Instance.hidden))
+        if event_filter:
+            query = query.filter(model.Event.event.in_(event_filter))
+        query = query.order_by(model.Event.time.desc())
+        if nr_events is not None:
+            query = query.limit(nr_events)
+        return query.all()
+
+    def _get_notifications(self, nr_notifications=None, event_filter=[]):
+        """get notifications for this user"""
+        q = model.meta.Session.query(model.Notification)
+        q = q.filter(model.Notification.user == c.user)
+        q = q.join(model.Event).order_by(model.Event.time.desc())
+        if event_filter:
+            q = q.filter(model.Notification.event_type.in_(event_filter))
+        if c.instance:
+            q = q.filter(model.Event.instance == c.instance)
+        if nr_notifications is not None:
+            q = q.limit(nr_notifications)
+        return q.all()
+
+    def _show_common(self, id, user, events):
+        """
+        Adds some pieces of information to the user info sidebar box.
+        Requires events list in order to determine last activity.
+        """
         if c.instance is None:
             c.active_global_nav = 'user'
+
+        c.last_activity = events[0].time if events else None
+        badges = user.badges
+        if c.instance:
+            c.local_badges = filter(lambda b: b.instance == c.instance, badges)
+        else:
+            c.local_badges = []
+        c.global_badges = filter(lambda b: b.instance is None, badges)
+
+        c.tile = tiles.user.UserTile(user)
+        self._common_metadata(user, add_canonical=True)
+
+    def show(self, id, format='html', current_nav=u'activity',
+             event_filter=[]):
+
         c.page_user = get_entity_or_abort(model.User, id,
                                           instance_filter=False)
         require.user.show(c.page_user)
+        c.events = self._get_events(nr_events=100, event_filter=event_filter)
+        self._show_common(id, user=c.page_user, events=c.events)
 
         if format == 'json':
             return render_json(c.page_user)
 
-        query = model.meta.Session.query(model.Event)
-        query = query.filter(model.Event.user == c.page_user)
-        query = query.order_by(model.Event.time.desc())
-        query = query.limit(10)
         if format == 'rss':
-            query = query.limit(50)
             return event.rss_feed(
-                query.all(), "%s Latest Actions" % c.page_user.name,
+                c.events, "%s Latest Actions" % c.page_user.name,
                 h.base_url('/user/%s' % c.page_user.user_name, None),
                 c.page_user.bio)
-        c.events_pager = pager.events(query.all())
-        c.tile = tiles.user.UserTile(c.page_user)
-        self._common_metadata(c.page_user, add_canonical=True)
+
+        c.events_pager = pager.events(c.events,
+                                      row_type=u'profile_row')
+
+        c.user_nav = self._get_profile_nav(c.page_user, current_nav)
 
         if format == 'overlay':
             return render("/user/show.html", overlay=True)
         else:
             return render("/user/show.html")
 
+    def dashboard(self, format='html', current_nav=u'all', event_filter=[]):
+        if c.user is None:
+            redirect(h.base_url('/login', query_params={
+                u'came_from': request.url,
+            }))
+
+        require.user.show_dashboard(c.user)
+
+        c.page_user = c.user
+
+        notifications = self._get_notifications(100, event_filter)
+        c.events = [n.event for n in notifications]
+        self._show_common(id, user=c.user, events=c.events)
+
+        if format == 'json':
+            return render_json(c.user)
+
+        if format == 'rss':
+            return event.rss_feed(
+                c.events, "%s Latest Actions" % c.user.name,
+                h.base_url('/user/%s' % c.user.user_name, None),
+                c.user.bio)
+
+        c.events_pager = pager.events(c.events)
+
+        c.dashboard = True
+        c.user_nav = self._get_dashboard_nav(c.user, current_nav)
+
+        return render("/user/show.html")
+
+    def dashboard_contributions(self, format='html',
+                                current_nav=u'contributions'):
+        return self.dashboard(format=format, current_nav=current_nav,
+                              event_filter=S_CONTRIBUTION)
+
+    def dashboard_votes(self, format='html', current_nav=u'votes'):
+        return self.dashboard(format=format, current_nav=current_nav,
+                              event_filter=S_VOTE)
+
+    def dashboard_delegations(self, format='html', current_nav=u'delegations'):
+        return self.dashboard(format=format, current_nav=current_nav,
+                              event_filter=S_DELEGATION)
+
+    def about(self, id, format='html'):
+        c.page_user = get_entity_or_abort(model.User, id,
+                                          instance_filter=False)
+        require.user.show(c.page_user)
+        c.events = self._get_events()
+        self._show_common(id, user=c.page_user, events=c.events)
+        c.user_nav = self._get_profile_nav(c.page_user, u'about')
+        c.bio = c.page_user.bio
+        c.about = True
+        return render("/user/show.html")
+
+    def latest_contributions(self, id, format='html'):
+        return self.show(id, format, u'contributions', S_CONTRIBUTION)
+
+    def latest_milestones(self, id, format='html'):
+        # Milestone events don't exist yet
+        return NotImplemented
+
+    def latest_votes(self, id, format='html'):
+        return self.show(id, format, u'votes', S_VOTE)
+
+    def latest_delegations(self, id, format='html'):
+        return self.show(id, format, u'delegations', S_DELEGATION)
+
     def login(self):
         c.active_global_nav = "login"
         if c.user:
-            redirect('/')
+            came_from = request.params.get('came_from', None)
+            if came_from is not None:
+                redirect(urllib.unquote_plus(came_from))
+            else:
+                redirect(h.user.post_login_url(c.user))
         else:
             return self._render_loginform()
 
-    def _render_loginform(self, errors=None, defaults=None):
+    def _render_loginform(self, errors=None, defaults=None, format=u'html'):
         if defaults is None:
             defaults = dict(request.params)
             defaults.setdefault('have_password', 'true')
@@ -788,11 +969,13 @@ class UserController(BaseController):
             config.get_bool('adhocracy.hide_locallogin')
             and not 'locallogin' in request.GET)
         add_static_content(data, u'adhocracy.static_login_path')
-        form = render('/user/login_tile.html', data)
+        form = render('/user/login_tile.html', data,
+                      overlay=format == u'overlay')
         form = htmlfill.render(form,
                                errors=errors,
                                defaults=defaults)
-        return render('/user/login.html', {'login_form_code': form})
+        return render('/user/login.html', {'login_form_code': form},
+                      overlay=format == u'overlay')
 
     def perform_login(self):
         pass  # managed by repoze.who
@@ -804,10 +987,11 @@ class UserController(BaseController):
             came_from = request.params.get('came_from', None)
             if came_from is not None:
                 redirect(urllib.unquote_plus(came_from))
-            # redirect to the dashboard inside the instance exceptionally
-            # to be able to link to proposals and norms in the welcome
-            # message.
-            redirect(h.user.post_login_url(c.user))
+            else:
+                # redirect to the dashboard inside the instance exceptionally
+                # to be able to link to proposals and norms in the welcome
+                # message.
+                redirect(h.user.post_login_url(c.user))
         else:
             login_configuration = h.allowed_login_types()
             error_message = _("Invalid login")
@@ -902,103 +1086,14 @@ class UserController(BaseController):
             _("Sorry, registration has been disabled by administrator."),
             category='error', code=403)
 
-    def dashboard(self, id):
-        '''Render a personalized dashboard for users'''
+    def legacy_dashboard(self, id):
+        redirect(h.base_url(u'/user/dashboard'))
 
-        if 'logged_in' in session:
-            c.fresh_logged_in = True
-            c.suppress_attention_getter = True
-            del session['logged_in']
-            came_from = request.params.get('came_from')
-            if came_from:
-                c.came_from = came_from
+    def legacy_dashboard_proposals(self, id):
+        redirect(h.base_url(u'/user/dashboard/proposals'))
 
-        #user object
-        c.page_user = get_entity_or_abort(model.User, id,
-                                          instance_filter=False)
-        require.user.show_dashboard(c.page_user)
-        #instances
-        instances = c.page_user.instances
-        #proposals
-        proposals = [model.Proposal.all(instance=i) for i in instances]
-        proposals = proposals and reduce(lambda x, y: x + y, proposals)
-        c.proposals = proposals
-        c.proposals_pager = pager.proposals(proposals, size=4,
-                                            default_sort=sorting.entity_newest,
-                                            enable_pages=False,
-                                            enable_sorts=False)
-        #polls
-        polls = [p.adopt_poll for p in proposals if p.is_adopt_polling()]
-        polls = filter(lambda p: not p.has_ended() and not p.is_deleted(),
-                       polls)
-        c.polls = polls
-        c.polls_pager = pager.polls(polls,
-                                    size=20,
-                                    default_sort=sorting.entity_newest,
-                                    enable_pages=False,
-                                    enable_sorts=False,)
-        #pages
-        c.show_pages = any(instance.use_norms for instance in instances)
-        if c.show_pages:
-            require.page.index()
-            pages = [model.Page.all(instance=i, functions=model.Page.LISTED)
-                     for i in instances]
-            pages = pages and reduce(lambda x, y: x + y, pages)
-            c.pages = pages
-            c.pages_pager = pager.pages(pages, size=3,
-                                        default_sort=sorting.entity_newest,
-                                        enable_pages=False,
-                                        enable_sorts=False)
-        #watchlist
-        require.watch.index()
-        c.active_global_nav = 'user'
-        watches = model.Watch.all_by_user(c.page_user)
-        entities = [w.entity for w in watches if (w.entity is not None)
-                    and (not isinstance(w.entity, unicode))]
-        c.watchlist_pager = NamedPager(
-            'watches', entities,
-            tiles.dispatch_row_with_comments,
-            size=3,
-            enable_pages=False,
-            enable_sorts=False,
-            default_sort=sorting.entity_newest)
-
-        #render result
-        c.tutorial = 'user_dashboard'
-        c.tutorial_intro = _('tutorial_dashboard_title')
-        return render('/user/dashboard.html')
-
-    def dashboard_proposals(self, id):
-        '''Render all proposals for all instances the user is member'''
-        #user object
-        c.page_user = get_entity_or_abort(model.User, id,
-                                          instance_filter=False)
-        require.user.show(c.page_user)
-        #instances
-        instances = c.page_user.instances
-        #proposals
-        proposals = [model.Proposal.all(instance=i) for i in instances]
-        proposals = proposals and reduce(lambda x, y: x + y, proposals)
-        c.proposals_pager = pager.proposals(proposals)
-        #render result
-        return render("/user/proposals.html")
-
-    def dashboard_pages(self, id):
-        '''Render all proposals for all instances the user is member'''
-        #user object
-        c.page_user = get_entity_or_abort(model.User, id,
-                                          instance_filter=False)
-        require.user.show(c.page_user)
-        #instances
-        instances = c.page_user.instances
-        #pages
-        require.page.index()
-        pages = [model.Page.all(instance=i, functions=model.Page.LISTED)
-                 for i in instances]
-        pages = pages and reduce(lambda x, y: x + y, pages)
-        c.pages_pager = pager.pages(pages)
-        #render result
-        return render("/user/pages.html")
+    def legacy_dashboard_pages(self, id):
+        redirect(h.base_url(u'/user/dashboard/pages'))
 
     @guard.perm("user.view")
     def complete(self):
@@ -1189,12 +1284,12 @@ class UserController(BaseController):
         return set(allowed[0]).union(set(allowed[1]))
 
     @guard.perm('instance.admin')
-    def edit_badges(self, id, errors=None):
+    def edit_badges(self, id, errors=None, format=u'html'):
         c.badges, c.instance_badges = self._allowed_badges()
         c.page_user = get_entity_or_abort(model.User, id)
         defaults = {'badge': [str(badge.id) for badge in c.page_user.badges]}
         return formencode.htmlfill.render(
-            render("/user/badges.html"),
+            render("/user/badges.html", overlay=format == u'overlay'),
             defaults=defaults,
             force_defaults=False)
 
@@ -1244,7 +1339,7 @@ class UserController(BaseController):
         bio = user.bio
         if not bio:
             bio = _("%(user)s is using Adhocracy, a democratic "
-                    "decision-making tool.") % {'user': c.page_user.name}
+                    "decision-making tool.") % {'user': user.name}
         description = h.truncate(text.meta_escape(bio), length=200,
                                  whole_word=True)
         h.add_meta("description", description)

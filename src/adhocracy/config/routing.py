@@ -26,23 +26,38 @@ def make_map(config):
 
     map.connect('/user/all', controller='user',
                 action='all', conditions=dict(method=['GET']))
-    map.connect('/user/{id}/badges', controller='user',
+    map.connect('/user/{id}/badges{.format}', controller='user',
                 action='edit_badges', conditions=dict(method=['GET']))
     map.connect('/user/{id}/badges', controller='user',
                 action='update_badges', conditions=dict(method=['POST']))
+    # Old dashboard
     map.connect('/user/{id}/dashboard', controller='user',
-                action='dashboard')
+                action='legacy_dashboard')
     map.connect('/user/{id}/dashboard_proposals', controller='user',
-                action='dashboard_proposals')
+                action='legacy_dashboard_proposals')
     map.connect('/user/{id}/dashboard_pages', controller='user',
-                action='dashboard_pages')
+                action='legacy_dashboard_pages')
+
+    # New event stream dashboard
+    map.connect('/user/dashboard', controller='user',
+                action='dashboard')
+    map.connect('/user/dashboard/contributions', controller='user',
+                action='dashboard_contributions')
+    map.connect('/user/dashboard/votes', controller='user',
+                action='dashboard_votes')
+    map.connect('/user/dashboard/delegations', controller='user',
+                action='dashboard_delegations')
     map.connect('/welcome/{id}/{token}', controller='user',
                 action='welcome')
 
     map.resource('user', 'user', member={'votes': 'GET',
                                          'delegations': 'GET',
-                                         'votes': 'GET',
                                          'instances': 'GET',
+                                         'about': 'GET',
+                                         'latest_contributions': 'GET',
+                                         'latest_milestones': 'GET',
+                                         'latest_votes': 'GET',
+                                         'latest_delegations': 'GET',
                                          'watchlist': 'GET',
                                          'groupmod': 'GET',
                                          'ban': 'GET',
@@ -75,34 +90,34 @@ def make_map(config):
                 conditions=dict(method=['GET']))
     map.connect('/user/{id}/message/new', controller='message', action='new',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings',
+    map.connect('/user/{id}/settings{.format}',
                 controller='user', action='settings_personal',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings',
+    map.connect('/user/{id}/settings{.format}',
                 controller='user', action='settings_personal_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/user/{id}/settings/login',
+    map.connect('/user/{id}/settings/login{.format}',
                 controller='user', action='settings_login',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings/login',
+    map.connect('/user/{id}/settings/login{.format}',
                 controller='user', action='settings_login_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/user/{id}/settings/notifications',
+    map.connect('/user/{id}/settings/notifications{.format}',
                 controller='user', action='settings_notifications',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings/notifications',
+    map.connect('/user/{id}/settings/notifications{.format}',
                 controller='user', action='settings_notifications_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/user/{id}/settings/advanced',
+    map.connect('/user/{id}/settings/advanced{.format}',
                 controller='user', action='settings_advanced',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings/advanced',
+    map.connect('/user/{id}/settings/advanced{.format}',
                 controller='user', action='settings_advanced_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/user/{id}/settings/optional',
+    map.connect('/user/{id}/settings/optional{.format}',
                 controller='user', action='settings_optional',
                 conditions=dict(method=['GET']))
-    map.connect('/user/{id}/settings/optional',
+    map.connect('/user/{id}/settings/optional{.format}',
                 controller='user', action='settings_optional_update',
                 conditions=dict(method=['PUT']))
 
@@ -240,7 +255,7 @@ def make_map(config):
                 conditions=dict(method=['GET']))
     map.connect('/page/{id}/edit', controller='page', action='edit',
                 conditions=dict(method=['GET']))
-    map.connect('/page/{id}/ask_delete', controller='page',
+    map.connect('/page/{id}/ask_delete{.format}', controller='page',
                 action='ask_delete',
                 conditions=dict(method=['GET']))
     map.connect('/page/{id}/{variant};{text}.{format}', controller='page',
@@ -296,18 +311,18 @@ def make_map(config):
                                          'ask_delete': 'GET',
                                          'widget': 'GET'})
 
-    map.connect('/badge', controller='badge', action='index',
+    map.connect('/badge{.format}', controller='badge', action='index',
                 conditions=dict(method=['GET']))
-    map.connect('/badge/{badge_type}/add', controller='badge',
+    map.connect('/badge/{badge_type}/add{.format}', controller='badge',
                 action='add', conditions=dict(method=['GET']))
-    map.connect('/badge/{badge_type}/add', controller='badge',
+    map.connect('/badge/{badge_type}/add{.format}', controller='badge',
                 action='create', conditions=dict(method=['POST']))
-    map.connect('/badge/edit/{id}', controller='badge',
+    map.connect('/badge/edit/{id}{.format}', controller='badge',
                 action="edit", conditions=dict(method=['GET']))
-    map.connect('/badge/edit/{id}',
+    map.connect('/badge/edit/{id}{.format}',
                 controller='badge', action="update",
                 conditions=dict(method=['POST']))
-    map.connect('/badge/delete/{id}',
+    map.connect('/badge/delete/{id}{.format}',
                 controller='badge', action="ask_delete",
                 conditions=dict(method=['GET']))
     map.connect('/badge/delete/{id}',
@@ -335,7 +350,7 @@ def make_map(config):
     map.connect('/tutorials', controller='root', action='tutorials')
 
     map.connect('/search/filter', controller='search', action='filter')
-    map.connect('/search', controller='search', action='query')
+    map.connect('/search{.format}', controller='search', action='query')
 
     map.connect('/abuse/report', controller='abuse', action='report')
     map.connect('/abuse/new', controller='abuse', action='new')
@@ -344,68 +359,68 @@ def make_map(config):
                 controller='instance', action='icon')
     map.connect('/instance/{id}_{y}.png',
                 controller='instance', action='icon')
-    map.connect('/instance/{id}/settings',
+    map.connect('/instance/{id}/settings{.format}',
                 controller='instance', action='settings_general',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings',
+    map.connect('/instance/{id}/settings{.format}',
                 controller='instance', action='settings_general_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/instance/{id}/settings/appearance',
+    map.connect('/instance/{id}/settings/appearance{.format}',
                 controller='instance', action='settings_appearance',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/appearance',
+    map.connect('/instance/{id}/settings/appearance{.format}',
                 controller='instance', action='settings_appearance_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/instance/{id}/settings/contents',
+    map.connect('/instance/{id}/settings/contents{.format}',
                 controller='instance', action='settings_contents',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/contents',
+    map.connect('/instance/{id}/settings/contents{.format}',
                 controller='instance', action='settings_contents_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/instance/{id}/settings/voting',
+    map.connect('/instance/{id}/settings/voting{.format}',
                 controller='instance', action='settings_voting',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/voting',
+    map.connect('/instance/{id}/settings/voting{.format}',
                 controller='instance', action='settings_voting_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/instance/{id}/settings/badges',
+    map.connect('/instance/{id}/settings/badges{.format}',
                 controller='instance', action='settings_badges',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/badges',
+    map.connect('/instance/{id}/settings/badges{.format}',
                 controller='instance', action='settings_badges_update',
                 conditions=dict(method=['PUT']))
-    map.connect('/instance/{id}/settings/badges/{badge_type}/add',
+    map.connect('/instance/{id}/settings/badges/{badge_type}/add{.format}',
                 controller='instance',
                 action='settings_badges_add', conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/badges/{badge_type}/add',
+    map.connect('/instance/{id}/settings/badges/{badge_type}/add{.format}',
                 controller='instance',
                 action='settings_badges_create',
                 conditions=dict(method=['POST']))
-    map.connect('/instance/{id}/settings/badges/edit/{badge_id}',
+    map.connect('/instance/{id}/settings/badges/edit/{badge_id}{.format}',
                 controller='instance',
                 action="settings_badges_edit", conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/badges/edit/{badge_id}',
+    map.connect('/instance/{id}/settings/badges/edit/{badge_id}{.format}',
                 controller='instance', action="settings_badges_update",
                 conditions=dict(method=['POST']))
-    map.connect('/instance/{id}/settings/badges/delete/{badge_id}',
+    map.connect('/instance/{id}/settings/badges/delete/{badge_id}{.format}',
                 controller='instance', action="settings_badges_ask_delete",
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/badges/delete/{badge_id}',
+    map.connect('/instance/{id}/settings/badges/delete/{badge_id}{.format}',
                 controller='instance', action="settings_badges_delete",
                 conditions=dict(method=['POST']))
-    map.connect('/instance/{id}/settings/massmessage',
+    map.connect('/instance/{id}/settings/massmessage{.format}',
                 controller='massmessage', action='new',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/massmessage',
+    map.connect('/instance/{id}/settings/massmessage{.format}',
                 controller='massmessage', action='create',
                 conditions=dict(method=['POST']))
-    map.connect('/instance/{id}/settings/massmessage/preview',
+    map.connect('/instance/{id}/settings/massmessage/preview{.format}',
                 controller='massmessage', action='preview',
                 conditions=dict(method=['POST']))
-    map.connect('/instance/{id}/settings/members_import',
+    map.connect('/instance/{id}/settings/members_import{.format}',
                 controller='instance', action='settings_members_import',
                 conditions=dict(method=['GET']))
-    map.connect('/instance/{id}/settings/members_import',
+    map.connect('/instance/{id}/settings/members_import{.format}',
                 controller='instance', action='settings_members_import_save',
                 conditions=dict(method=['PUT', 'POST']))
 
@@ -422,15 +437,15 @@ def make_map(config):
     map.connect('/stats/', controller='stats')
 
     map.connect('/admin', controller='admin', action="index")
-    map.connect('/admin/users/import', controller='admin',
+    map.connect('/admin/users/import{.format}', controller='admin',
                 action="user_import", conditions=dict(method=['POST']))
-    map.connect('/admin/users/import', controller='admin',
+    map.connect('/admin/users/import{.format}', controller='admin',
                 action="user_import_form", conditions=dict(method=['GET']))
     map.connect('/admin/export',
                 controller='admin', action='export_dialog')
     map.connect('/admin/export/do',
                 controller='admin', action='export_do')
-    map.connect('/admin/import',
+    map.connect('/admin/import{.format}',
                 controller='admin', action='import_dialog')
     map.connect('/admin/import/do',
                 controller='admin', action='import_do')
@@ -446,18 +461,18 @@ def make_map(config):
     map.connect('/admin/treatment/{key}/assigned',
                 controller='treatment', action='assigned')
 
-    map.connect('/static/', controller='static', action='index',
+    map.connect('/static{.format}', controller='static', action='index',
                 conditions=dict(method=['GET', 'HEAD']))
-    map.connect('/static/', controller='static', action='make_new',
+    map.connect('/static{.format}', controller='static', action='make_new',
                 conditions=dict(method=['POST']))
-    map.connect('/static/new', controller='static', action='new')
+    map.connect('/static/new{.format}', controller='static', action='new')
     map.connect('/static/{key}_{lang}',
                 controller='static', action='edit',
                 conditions=dict(method=['GET', 'HEAD']))
-    map.connect('/static/{key}_{lang}',
+    map.connect('/static/{key}_{lang}{.format}',
                 controller='static', action='update',
                 conditions=dict(method=['POST']))
-    map.connect('/static/{key}.{format}', controller='static',
+    map.connect('/static/{key}{.format}', controller='static',
                 action='serve')
     map.connect('/outgoing_link/{url_enc}', controller='redirect',
                 action='outgoing_link',

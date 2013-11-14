@@ -199,6 +199,14 @@ class Page(Delegateable):
                 c.function in self.LISTED and not c.is_deleted()]
 
     @property
+    def root(self):
+        parent = self.parent
+        if parent is None:
+            return self
+        else:
+            return parent.root
+
+    @property
     def has_variants(self):
         return self.function in Page.WITH_VARIANTS and self.allow_selection
 
@@ -335,8 +343,6 @@ class Page(Delegateable):
     def delete(self, delete_time=None):
         if delete_time is None:
             delete_time = datetime.utcnow()
-        for text in self.texts:
-            text.delete(delete_time=delete_time)
         for selection in self.selections:
             selection.delete(delete_time=delete_time)
         if self.delete_time is None:
