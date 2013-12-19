@@ -1,6 +1,7 @@
 import io
 import os
 import re
+import argparse
 
 
 class config:
@@ -71,14 +72,15 @@ def get_defaults(filename):
     return cfgs
 
 
-def print_cfgs(cfgs):
+def print_cfgs(cfgs, cfgs2=configs()):
     for key in sorted(cfgs.confs.viewkeys()):
-        print(key),
-        print(": "),
-        for conf in cfgs.confs[key]:
-            print(conf.typ),
-            None
-        print("")
+        if key not in cfgs2.confs.viewkeys():
+            print(key),
+            print(": "),
+            for conf in cfgs.confs[key]:
+                print(conf.typ),
+                None
+            print("")
 
 
 def print_confs():
@@ -121,9 +123,41 @@ def print_obsolete():
         if miss:
             print(key)
 
+
+used = configs()
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, 'src')
+get_sorted_configs(SRC, used)
+defaults = get_defaults(os.path.join(SRC, 'adhocracy/config/__init__.py'))
+
+#print_cfgs(defaults, cfgs)
+
+parser = argparse.ArgumentParser()
+group = parser.add_mutually_exclusive_group()
+group.add_argument("-u", "--used", action="store_true",
+                   help="print used options in code")
+group.add_argument("-d", "--default", action="store_true",
+                   help="print default options in __init__.py")
+parser.add_argument("-D", "--difference", action="store_true",
+                    help="print the difference between used and "
+                    "default options")
+
+args = parser.parse_args()
+
+if args.used:
+    if args.difference:
+        print_cfgs(used, defaults)
+    else:
+        print_cfgs(used)
+if args.default:
+    if args.difference:
+        print_cfgs(defaults, used)
+    else:
+        print_cfgs(defaults)
+
 #get_defaults("../src/adhocracy/config/__init__.py")
 #print_missing()
-print_obsolete()
+#print_obsolete()
 #print_defaults()
 #print_confs()
 
