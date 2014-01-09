@@ -50,10 +50,24 @@ def find_config(filename, cfgs=None):
         yield m.group(3)
 
 
+def find_pylons_import(filename):
+    with io.open(filename, 'r', encoding="UTF-8") as f:
+        code = f.read()
+    if re.search(r"""from pylons import config""", code) is not None:
+        return filename
+
+
 def get_sorted_configs(dir, cfgs=None):
     s = set()
     for f in find_py_files(dir):
         s.update(find_config(f, cfgs))
+    return sorted(s)
+
+
+def get_pylons_imports(dir, cfgs=None):
+    s = set()
+    for f in find_py_files(dir):
+        s.add(find_pylons_import(f))
     return sorted(s)
 
 
@@ -65,7 +79,7 @@ def get_defaults(filename):
     cfgs = configs()
     for m in re.finditer(r"""^ [^u\n]*?\'(.*?)\'.*?,\n""",
                          defaults, re.MULTILINE):
-        fds = config(m.group(1), m.group)
+        fds = config(m.group(1), m.group())
         cfgs.update(fds)
         #print(m.group(1)),
         #print(" ###")
@@ -100,7 +114,8 @@ def print_missing():
     cfgs = configs()
     ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     get_sorted_configs(os.path.join(ROOT, 'src'), cfgs)
-    defaults = get_defaults(os.path.join(ROOT, 'src/adhocracy/config/__init__.py'))
+    defaults = get_defaults(os.path.join(ROOT,
+                            'src/adhocracy/config/__init__.py'))
     for key in sorted(cfgs.confs.viewkeys()):
         miss = True
         for key2 in sorted(defaults.confs.viewkeys()):
@@ -114,7 +129,8 @@ def print_obsolete():
     cfgs = configs()
     ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     get_sorted_configs(os.path.join(ROOT, 'src'), cfgs)
-    defaults = get_defaults(os.path.join(ROOT, 'src/adhocracy/config/__init__.py'))
+    defaults = get_defaults(os.path.join(ROOT,
+                            'src/adhocracy/config/__init__.py'))
     for key in sorted(defaults.confs.viewkeys()):
         miss = True
         for key2 in sorted(cfgs.confs.viewkeys()):
@@ -141,6 +157,10 @@ group.add_argument("-d", "--default", action="store_true",
 parser.add_argument("-D", "--difference", action="store_true",
                     help="print the difference between used and "
                     "default options")
+parser.add_argument("-p", "--packages", action="store_true",
+                    help="get packages of used options")
+parser.add_argument("-i", "--imports", action="store_true",
+                    help="check for import config from pylons")
 
 args = parser.parse_args()
 
@@ -154,6 +174,20 @@ if args.default:
         print_cfgs(defaults, used)
     else:
         print_cfgs(defaults)
+if args.packages:
+    for key in sorted(used.confs.viewkeys()):
+            print(key),
+            print(": "),
+            for conf in used.confs[key]:
+                print("!\\"),
+                print(conf.get_package()),
+                print("/!"),
+                print(conf.typ),
+                None
+            print("")
+if args.imports:
+    for f in get_pylons_imports(SRC):
+        print(f)
 
 #get_defaults("../src/adhocracy/config/__init__.py")
 #print_missing()
