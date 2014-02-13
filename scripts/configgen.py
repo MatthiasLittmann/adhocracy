@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+from __future__ import unicode_literals
 import io
 import os
 import re
@@ -24,14 +26,11 @@ class configs:
             self.confs[conf.name] = list()
         self.confs[conf.name].append(conf)
 
-#cfgs = configs()
-
 
 def find_py_files(dir):
     for dirpath, dirname, filenames in os.walk(dir):
         for filename in filenames:
-            if os.path.splitext(filename)[1] == ".py" or \
-                    os.path.splitext(filename)[1] == ".html":
+            if os.path.splitext(filename)[1] in [".py", ".html"]:
                 yield os.path.join(dirpath, filename)
 
 
@@ -40,12 +39,10 @@ def find_config(filename, cfgs=None):
         code = f.read()
     for m in re.finditer(r"""(?x)^.*(config (?:\.get_?(.*?)\(|\[)
             '(.*?)' #matching group for name
-            (?:,.*?)? (?:\)|\])).*$ # group 1 for comlete config
+            (?:,.*?)? (?:\)|\])).*$ # group 1 for complete config
             """, code, re.MULTILINE):
         if cfgs is not None:
             fds = config(m.group(3), m.group(), m.group(2))
-            #print(m.group(2)),
-            #print(m.group(1))
             cfgs.update(fds)
         yield m.group(3)
 
@@ -81,8 +78,6 @@ def get_defaults(filename):
                          defaults, re.MULTILINE):
         fds = config(m.group(1), m.group())
         cfgs.update(fds)
-        #print(m.group(1)),
-        #print(" ###")
     return cfgs
 
 
@@ -146,8 +141,6 @@ SRC = os.path.join(ROOT, 'src')
 get_sorted_configs(SRC, used)
 defaults = get_defaults(os.path.join(SRC, 'adhocracy/config/__init__.py'))
 
-#print_cfgs(defaults, cfgs)
-
 parser = argparse.ArgumentParser()
 group = parser.add_mutually_exclusive_group()
 group.add_argument("-u", "--used", action="store_true",
@@ -188,10 +181,4 @@ if args.packages:
 if args.imports:
     for f in get_pylons_imports(SRC):
         print(f)
-
-#get_defaults("../src/adhocracy/config/__init__.py")
-#print_missing()
-#print_obsolete()
-#print_defaults()
-#print_confs()
 
