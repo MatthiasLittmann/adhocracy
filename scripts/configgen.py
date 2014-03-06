@@ -38,13 +38,13 @@ def find_config(filename, cfgs=None):
     with io.open(filename, 'r', encoding="UTF-8") as f:
         code = f.read()
     for m in re.finditer(r"""(?x)^.*(config (?:\.get_?(.*?)\(|\[)
-            '(.*?)' #matching group for name
+            '(?P<name>.*?)'
             (?:,.*?)? (?:\)|\])).*$ # group 1 for complete config
             """, code, re.MULTILINE):
         if cfgs is not None:
-            fds = config(m.group(3), m.group(), m.group(2))
+            fds = config(m.group('name'), m.group(), m.group(2))
             cfgs.update(fds)
-        yield m.group(3)
+        yield m.group('name')
 
 
 def find_pylons_import(filename):
@@ -82,8 +82,8 @@ def get_defaults(filename):
 
 
 def print_cfgs(cfgs, cfgs2=configs()):
-    for key in sorted(cfgs.confs.viewkeys()):
-        if key not in cfgs2.confs.viewkeys():
+    for key in sorted(cfgs.confs.keys()):
+        if key not in cfgs2.confs.keys():
             print(key),
             print(": "),
             for conf in cfgs.confs[key]:
@@ -111,9 +111,9 @@ def print_missing():
     get_sorted_configs(os.path.join(ROOT, 'src'), cfgs)
     defaults = get_defaults(os.path.join(ROOT,
                             'src/adhocracy/config/__init__.py'))
-    for key in sorted(cfgs.confs.viewkeys()):
+    for key in sorted(cfgs.confs.keys()):
         miss = True
-        for key2 in sorted(defaults.confs.viewkeys()):
+        for key2 in sorted(defaults.confs.keys()):
             if key == key2:
                 miss = False
         if miss:
@@ -126,59 +126,64 @@ def print_obsolete():
     get_sorted_configs(os.path.join(ROOT, 'src'), cfgs)
     defaults = get_defaults(os.path.join(ROOT,
                             'src/adhocracy/config/__init__.py'))
-    for key in sorted(defaults.confs.viewkeys()):
+    for key in sorted(defaults.confs.keys()):
         miss = True
-        for key2 in sorted(cfgs.confs.viewkeys()):
+        for key2 in sorted(cfgs.confs.keys()):
             if key == key2:
                 miss = False
         if miss:
             print(key)
 
 
-used = configs()
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, 'src')
-get_sorted_configs(SRC, used)
-defaults = get_defaults(os.path.join(SRC, 'adhocracy/config/__init__.py'))
+def main():
+    used = configs()
+    ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    SRC = os.path.join(ROOT, 'src')
+    get_sorted_configs(SRC, used)
+    defaults = get_defaults(os.path.join(SRC, 'adhocracy/config/__init__.py'))
 
-parser = argparse.ArgumentParser()
-group = parser.add_mutually_exclusive_group()
-group.add_argument("-u", "--used", action="store_true",
-                   help="print used options in code")
-group.add_argument("-d", "--default", action="store_true",
-                   help="print default options in __init__.py")
-parser.add_argument("-D", "--difference", action="store_true",
-                    help="print the difference between used and "
-                    "default options")
-parser.add_argument("-p", "--packages", action="store_true",
-                    help="get packages of used options")
-parser.add_argument("-i", "--imports", action="store_true",
-                    help="check for import config from pylons")
+    parser = argparse.ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-u", "--used", action="store_true",
+                       help="print used options in code")
+    group.add_argument("-d", "--default", action="store_true",
+                       help="print default options in __init__.py")
+    parser.add_argument("-D", "--difference", action="store_true",
+                        help="print the difference between used and "
+                        "default options")
+    parser.add_argument("-p", "--packages", action="store_true",
+                        help="get packages of used options")
+    parser.add_argument("-i", "--imports", action="store_true",
+                        help="check for import config from pylons")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-if args.used:
-    if args.difference:
-        print_cfgs(used, defaults)
-    else:
-        print_cfgs(used)
-if args.default:
-    if args.difference:
-        print_cfgs(defaults, used)
-    else:
-        print_cfgs(defaults)
-if args.packages:
-    for key in sorted(used.confs.viewkeys()):
-            print(key),
-            print(": "),
-            for conf in used.confs[key]:
-                print("!\\"),
-                print(conf.get_package()),
-                print("/!"),
-                print(conf.typ),
-                None
-            print("")
-if args.imports:
-    for f in get_pylons_imports(SRC):
-        print(f)
+    if args.used:
+        if args.difference:
+            print_cfgs(used, defaults)
+        else:
+            print_cfgs(used)
+    if args.default:
+        if args.difference:
+            print_cfgs(defaults, used)
+        else:
+            print_cfgs(defaults)
+    if args.packages:
+        for key in sorted(used.confs.keys()):
+                print(key),
+                print(": "),
+                for conf in used.confs[key]:
+                    print("!\\"),
+                    print(conf.get_package()),
+                    print("/!"),
+                    print(conf.typ),
+                    None
+                print("")
+    if args.imports:
+        for f in get_pylons_imports(SRC):
+            print(f)
+
+
+if __name__ == '__main__':
+    main()
 
